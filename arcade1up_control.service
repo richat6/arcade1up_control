@@ -1,0 +1,14 @@
+[Unit]
+Description=Arcade1Up power and volume switch control service
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/python3 -u /home/pi/arcade1up/bin/arcade1up_control.py
+StandardOutput=inherit
+StandardError=inherit
+Restart=always
+RestartSec=1
+User=root
+
+[Install]
+WantedBy=multi-user.target
