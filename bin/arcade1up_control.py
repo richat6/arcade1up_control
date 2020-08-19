@@ -19,11 +19,11 @@ GPIO_VOLUME_BROWN = 12 # brown to 12, red to 14 (GND)
 GPIO_VOLUME_BLACK = 16 # black to 16
 
 # which mixer to control
-AMIXER_MIXER = "PCM"
+AMIXER_MIXER = 'Headphone'
 # medium volume level
-AMIXER_VOLUME_MEDIUM = "60%"
+AMIXER_VOLUME_MEDIUM = '60%'
 # high volume level
-AMIXER_VOLUME_HIGH = "75%"
+AMIXER_VOLUME_HIGH = '75%'
 
 BOUNCEBACK=150 #ms - no bounceback detected during switch/slider testing, but just in case
 POWER_BOUNCEBACK=BOUNCEBACK # use default bounceback
@@ -52,7 +52,7 @@ def _power_callback(channel):
     debug("Channel " + str(channel) + ": " + str(GPIO.input(channel)))
     if GPIO.input(GPIO_POWER):
         print("Power OFF")
-        call(["poweroff"])
+        call(['poweroff'])
     else:
         print("Power ON")
         # let the hardware system power itself on - this case is when the Pi is already running,
@@ -77,15 +77,13 @@ def set_volume_from_gpio():
     volume_black = GPIO.input(GPIO_VOLUME_BLACK)
     if volume_brown and volume_black:
         print("Set Volume: MUTE")
-        call(["amixer", "set", AMIXER_MIXER, "mute"])
+        call(['amixer', 'set', AMIXER_MIXER, 'mute'])
     elif volume_brown:
-        print("Set Volume: MEDIUM")
-        call(["amixer", "set", AMIXER_MIXER, "unmute"])
-        call(["amixer", "set", AMIXER_MIXER, AMIXER_VOLUME_MEDIUM])
+        print("Set Volume: MEDIUM (" + AMIXER_VOLUME_MEDIUM + ")")
+        call(['amixer', 'set', AMIXER_MIXER, AMIXER_VOLUME_MEDIUM, 'unmute'])
     else:
-        print("Set Volume: HIGH")
-        call(["amixer", "set", AMIXER_MIXER, "unmute"])
-        call(["amixer", "set", AMIXER_MIXER, AMIXER_VOLUME_HIGH])
+        print("Set Volume: HIGH(" + AMIXER_VOLUME_HIGH + ")")
+        call(['amixer', 'set', AMIXER_MIXER, AMIXER_VOLUME_HIGH, 'unmute'])
 
 def _volume_callback(channel):
     debug("Channel " + str(channel) + ": " + str(GPIO.input(channel)))
@@ -109,7 +107,7 @@ def _on_exit(a, b):
     sys.exit(0)
 
 # test mode to check GPIO import and initial mode setting, exit quickly and cleanly if they are OK
-test_mode = "--test-only" in sys.argv
+test_mode = '--test-only' in sys.argv
 if test_mode:
     debug("Test-only mode - will exit after quick GPIO setup test")
 

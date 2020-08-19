@@ -14,6 +14,8 @@ python3 ${DIRNAME}/bin/arcade1up_control.py --test-only || ( echo "Setup failed 
 # Copy service file to /etc/systemd/system/
 echo "Copying systemd service file"
 cp ${DIRNAME}/arcade1up_control.service /etc/systemd/system/arcade1up_control.service
+chmod -x /etc/systemd/system/arcade1up_control.service
+chmod +r /etc/systemd/system/arcade1up_control.service
 
 # Enable and start the service
 echo "Enabling and starting arcade1up_control service"
