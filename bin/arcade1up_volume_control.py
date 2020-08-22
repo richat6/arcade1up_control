@@ -117,8 +117,8 @@ if test_mode:
     debug("Test OK")
     sys.exit(0)
 
-setup_power_control()
-setup_volume_control()
+#setup_power_control() # moved to separate control/process so can run as root
+setup_volume_control() # needs to run as same user as EmulationStation (pi)
 
 # register for interrupt signal
 signal.signal(signal.SIGINT, _on_exit)
