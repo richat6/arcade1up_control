@@ -21,9 +21,9 @@ GPIO_VOLUME_BLACK = 16 # black to 16
 # which mixer to control
 AMIXER_MIXER = 'Headphone'
 # medium volume level
-AMIXER_VOLUME_MEDIUM = '60%'
+AMIXER_VOLUME_MEDIUM = '65%'
 # high volume level
-AMIXER_VOLUME_HIGH = '75%'
+AMIXER_VOLUME_HIGH = '80%'
 
 BOUNCEBACK=150 #ms - no bounceback detected during switch/slider testing, but just in case
 POWER_BOUNCEBACK=BOUNCEBACK # use default bounceback
