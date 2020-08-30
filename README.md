@@ -24,10 +24,11 @@ sudo arcade1up_control/install.sh
 
 ### Config
 
-After any config changes made in arcade1up_control.py, restart the service:
+After any config changes made in arcade1up_power_control.py or arcade1up_power_control.py, restart the service:
 
 ```
-sudo systemctl restart arcade1up_control
+sudo systemctl restart arcade1up_power_control
+sudo systemctl restart arcade1up_volume_control
 ```
 
 ### Logs
