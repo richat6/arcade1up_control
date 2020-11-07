@@ -61,6 +61,8 @@ def _on_exit(a, b):
     GPIO.cleanup()
     sys.exit(0)
 
+debug("DEBUG = True")
+
 # test mode to check GPIO import and initial mode setting, exit quickly and cleanly if they are OK
 test_mode = '--test-only' in sys.argv
 if test_mode:
