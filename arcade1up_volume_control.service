@@ -1,5 +1,5 @@
 [Unit]
-Description=Arcade1Up power and volume switch control service
+Description=Arcade1Up volume switch control service
 After=network.target
 
 [Service]
