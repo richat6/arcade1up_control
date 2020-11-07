@@ -42,28 +42,16 @@ def setup_gpio():
     # Useful reference https://sourceforge.net/p/raspberry-gpio-python/wiki/Inputs/
     GPIO.setmode(GPIO.BOARD)
 
-#
-# Power Control
-#
-def _power_callback(channel):
-    # Power state GPIO[5]
-    # Off: [1]
-    # On:  [0]
-    debug("Channel " + str(channel) + ": " + str(GPIO.input(channel)))
-    if GPIO.input(GPIO_POWER):
-        print("Power OFF")
-        call(['poweroff'])
+def amixer(mixer, volume_level):
+    call_args = []
+    if volume_level is None:
+        # mute
+        call_args = ['amixer', 'set', mixer, 'mute']
     else:
-        print("Power ON")
-        # let the hardware system power itself on - this case is when the Pi is already running,
-        # but the power switch was Off and has moved to On - ie. nothing to see here, move along please
-
-def setup_power_control():
-    # setup power button pin(s)
-    GPIO.setup(GPIO_POWER, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-    
-    # register for power switch changes
-    GPIO.add_event_detect(GPIO_POWER, GPIO.BOTH, callback=_power_callback, bouncetime=POWER_BOUNCEBACK)
+        call_args = ['amixer', 'set', mixer, volume_level, 'unmute']
+    if debug:
+        print(' '.join(call_args))
+    call(call_args)
 
 #
 # Volume Control
@@ -75,15 +63,16 @@ def set_volume_from_gpio():
     # High:   [0 0]
     volume_brown = GPIO.input(GPIO_VOLUME_BROWN)
     volume_black = GPIO.input(GPIO_VOLUME_BLACK)
+    debug("BROWN: " + str(volume_brown) + ", BLACK: " + str(volume_black))
     if volume_brown and volume_black:
         print("Set Volume: MUTE")
-        call(['amixer', 'set', AMIXER_MIXER, 'mute'])
+        amixer(AMIXER_MIXER)
     elif volume_brown:
         print("Set Volume: MEDIUM (" + AMIXER_VOLUME_MEDIUM + ")")
-        call(['amixer', 'set', AMIXER_MIXER, AMIXER_VOLUME_MEDIUM, 'unmute'])
+        amixer(AMIXER_MIXER, AMIXER_VOLUME_MEDIUM)
     else:
         print("Set Volume: HIGH(" + AMIXER_VOLUME_HIGH + ")")
-        call(['amixer', 'set', AMIXER_MIXER, AMIXER_VOLUME_HIGH, 'unmute'])
+        amixer(AMIXER_MIXER, AMIXER_VOLUME_HIGH)
 
 def _volume_callback(channel):
     debug("Channel " + str(channel) + ": " + str(GPIO.input(channel)))
@@ -95,6 +84,7 @@ def setup_volume_control():
     GPIO.setup(GPIO_VOLUME_BLACK, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
     # in case the volume slider has moved sinced last run, initialise volume to current slider
+    debug("Initialising volume...")
     set_volume_from_gpio()
 
     # register for volume slider changes
@@ -105,6 +95,8 @@ def _on_exit(a, b):
     print("Exiting...")
     GPIO.cleanup()
     sys.exit(0)
+
+debug("DEBUG = True")
 
 # test mode to check GPIO import and initial mode setting, exit quickly and cleanly if they are OK
 test_mode = '--test-only' in sys.argv
@@ -117,7 +109,6 @@ if test_mode:
     debug("Test OK")
     sys.exit(0)
 
-#setup_power_control() # moved to separate control/process so can run as root
 setup_volume_control() # needs to run as same user as EmulationStation (pi)
 
 # register for interrupt signal
